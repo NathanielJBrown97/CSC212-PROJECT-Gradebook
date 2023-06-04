@@ -1,84 +1,123 @@
 #include "gradebook.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <vector>
 
-Student::Student(const std::string &name) : studentName(name) {
+GradeBook::GradeBook(const std::string &name) {
 }
 
 // METHODS
-
+void GradeBook::SetStudentName(std::string name){
+    this->studentName = name;
+}
 // void method that is passed a filename and a student object to fill - utilizes helper function to add grades to vectors.
-void Student::intakeDataFile(const std::string& fileName, Student& student){
-    //open file passed to intake - call it file
-    std::ifstream file(fileName);
-    // string to store each line of hte txt
-    std::string currentLine;
-    //while there are lines to get - i.e. read each line
-    while (std::getline(file, currentLine)){
-        //create istringstream variable 'extractVal' to get values from each lnie
-        std::istringstream extractValue(currentLine);
-        //string to store category name (i.e. hw, assignment, lab, ect)
-        std::string categoryName;
-        //int for each grade
-        int grade;
+void GradeBook::intakeDataFile(const std::string& fileName, GradeBook& gradeBook){
+    std::ifstream inputFile;
+    inputFile.open(fileName);
+    if (inputFile.is_open()){
+        std::string line;
+        std::string category;
+        std::string fname;
+        std::string lname;
+        float grade;
 
-        // extract categoryName from the istream variable
-        extractValue >> categoryName;
 
-        // loop through grades of above category extracting them
-        while (extractValue >> grade){
-            // if category is homework...
-            if (categoryName == "Homework"){
-                //call helper function to add this grade to hw vector for our student.
-                student.addGradeToVector(student.homeworkGradesVector, grade);
+        while (inputFile){
+            std::istringstream extractValue(line);
+
+//            inputFile >> category;
+            extractValue >> category;
+            if (category == "Name"){
+//                inputFile >> fname >> lname;
+                extractValue >> fname >> lname;
+                gradeBook.SetStudentName(fname + " " + lname);
+            } else if (category == "Lab"){
+                while(extractValue >> grade){
+                    gradeBook.labGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Assignment"){
+                while(extractValue >> grade){
+                    gradeBook.assignmentGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Project"){
+                while(extractValue >> grade){
+                    gradeBook.projectGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Exam"){
+                while(extractValue >> grade){
+                    gradeBook.examGradesVector.emplace_back(grade);
+                }
             }
-                // if category is assignment...
-            else if (categoryName == "Assignment"){
-                //call helper function to add this grade to the assignment vector
-                student.addGradeToVector(student.assignmentGradesVector, grade);
-            }
-                // if category is lab...
-            else if (categoryName == "Lab"){
-                // call helper function to add this grade to the lab vector
-                student.addGradeToVector(student.labGradesVector, grade);
-            }
-                // if category is exam
-            else if (categoryName == "Exam"){
-                // call helper function to add this grade to the grade vector.
-                student.addGradeToVector(student.examGradesVector, grade);
-            }
-                // if category is project
-            else if (categoryName == "Project"){
-                // clal helper function to add this grade to the project vector
-                student.addGradeToVector(student.projectGradesVector, grade);
-            }
+            getline(inputFile, line);
         }
+        inputFile.close();
+
+    }else{
+        std::cout << "Error opening file.";
+//        return 1;
     }
-    // close the file - because reasons.
-    file.close();
 }
 
 // double that takes in all grades vectors - calls helper calcAvg function to return averages
-double Student::calculateCourseGrade(const std::vector<int> &homeworkGradesVector ,
-                            const std::vector<int> &assignmentGradesVector ,
+double GradeBook::calculateCourseGrade(const std::vector<int> &assignmentGradesVector ,
                             const std::vector<int> &labGradesVector ,
                             const std::vector<int> &examGradesVector ,
                             const std::vector<int> &projectGradesVector){
-    return (calculateSpecificAverage(homeworkGradesVector) * 0.10)
-         + (calculateSpecificAverage(assignmentGradesVector) * 0.20)
-         + (calculateSpecificAverage(labGradesVector) * 0.20)
-         + (calculateSpecificAverage(examGradesVector) * 0.10)
-         + (calculateSpecificAverage(projectGradesVector) * 0.40);
+    int totalPoints = 1000;
+    double pointsEarned = 0;
+    double average = 0;
+
+    if (assignmentGradesVector.empty())
+        totalPoints -= 200;
+    else{
+        for (double grade : this->assignmentGradesVector){
+            pointsEarned += grade;
+        }
+    }
+    if (labGradesVector.empty())
+        totalPoints -= 200;
+    else{
+        for (double grade : this->labGradesVector){
+            pointsEarned += grade;
+        }
+    }
+    if (examGradesVector.empty())
+        totalPoints -= 100;
+    else{
+        for (double grade : this->examGradesVector){
+            pointsEarned += grade;
+        }
+    }
+    if (projectGradesVector.empty())
+        totalPoints -= 500;
+    else{
+        for (double grade : this->projectGradesVector){
+            pointsEarned += grade;
+        }
+    }
+
+
+    if (totalPoints > 0){
+        average = pointsEarned/totalPoints;
+        average *= 100;
+    }
+
+    return average;
 }
 
 // HELPERS
 
 //void function taking reference of specific vector, and individual grade.
 //adds grade into the specific vector -- this should be flexible and work for all grades
-void Student::addGradeToVector(std::vector<int> &SpecificGradeVector, int grade) {
+void GradeBook::addGradeToVector(std::vector<int> &SpecificGradeVector, int grade) {
     SpecificGradeVector.push_back(grade);
 }
 
 //double (for precision) helper function, takes specific vector, returns average
-double Student::calculateSpecificAverage(const std::vector<int> &SpecificGradeVector){
+double GradeBook::calculateSpecificAverage(const std::vector<int> &SpecificGradeVector, int maxGrades){
     double sum = 0;
     // for each grade in specific vector
     for(int eachGrade : SpecificGradeVector){
@@ -86,9 +125,10 @@ double Student::calculateSpecificAverage(const std::vector<int> &SpecificGradeVe
         sum += eachGrade;
     }
     // return the average (sum / size of vector)
-    return sum / SpecificGradeVector.size();
+//    return sum / SpecificGradeVector.size();
+return sum / maxGrades;
 }
 
-std::string Student::getStudentName() const {
-    return studentName;
+std::string GradeBook::getStudentName() const {
+    return this->studentName;
 }
