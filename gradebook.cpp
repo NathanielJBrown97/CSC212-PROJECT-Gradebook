@@ -22,16 +22,13 @@ void GradeBook::intakeDataFile(const std::string& fileName, GradeBook& gradeBook
         std::string category;
         std::string fname;
         std::string lname;
-        float grade;
-
+        double grade;
 
         while (inputFile){
             std::istringstream extractValue(line);
 
-//            inputFile >> category;
             extractValue >> category;
             if (category == "Name"){
-//                inputFile >> fname >> lname;
                 extractValue >> fname >> lname;
                 gradeBook.SetStudentName(fname + " " + lname);
             } else if (category == "Lab"){
@@ -62,10 +59,10 @@ void GradeBook::intakeDataFile(const std::string& fileName, GradeBook& gradeBook
 }
 
 // double that takes in all grades vectors - calls helper calcAvg function to return averages
-double GradeBook::calculateCourseGrade(const std::vector<int> &assignmentGradesVector ,
-                            const std::vector<int> &labGradesVector ,
-                            const std::vector<int> &examGradesVector ,
-                            const std::vector<int> &projectGradesVector){
+double GradeBook::calculateCourseGrade(const std::vector<double> &assignmentGradesVector ,
+                            const std::vector<double> &labGradesVector ,
+                            const std::vector<double> &examGradesVector ,
+                            const std::vector<double> &projectGradesVector){
     int totalPoints = 1000;
     double pointsEarned = 0;
     double average = 0;
@@ -99,7 +96,6 @@ double GradeBook::calculateCourseGrade(const std::vector<int> &assignmentGradesV
         }
     }
 
-
     if (totalPoints > 0){
         average = pointsEarned/totalPoints;
         average *= 100;
@@ -112,12 +108,12 @@ double GradeBook::calculateCourseGrade(const std::vector<int> &assignmentGradesV
 
 //void function taking reference of specific vector, and individual grade.
 //adds grade into the specific vector -- this should be flexible and work for all grades
-void GradeBook::addGradeToVector(std::vector<int> &SpecificGradeVector, int grade) {
+void GradeBook::addGradeToVector(std::vector<double> &SpecificGradeVector, double grade) {
     SpecificGradeVector.push_back(grade);
 }
 
 //double (for precision) helper function, takes specific vector, returns average
-double GradeBook::calculateSpecificAverage(const std::vector<int> &SpecificGradeVector, int maxGrades){
+double GradeBook::calculateSpecificAverage(std::vector<double> &SpecificGradeVector, int maxGrades){
     double sum = 0;
     // for each grade in specific vector
     for(int eachGrade : SpecificGradeVector){
