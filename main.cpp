@@ -1,5 +1,11 @@
 #include "gradebook.h"
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <vector>
+
 // General idea - I think
 
 // Create TXT Files
@@ -31,23 +37,81 @@
 
 int main(int argc, char* argv[]){
     //create object of the student class
-    Student student1("Nathaniel Brown");
+    GradeBook gradeBook("");
 
     //extract filename from CLA
-    std::string fileName = argv[1];
-
+    //std::string fileName = argv[1];
+    std::string fileName = "../test_full.txt";
+//    std::string fileName = "../test_empty.txt";
     // initiate intake of student1 txt file; to fill student obj's vectors
-    student1.intakeDataFile(fileName, student1);
+    gradeBook.intakeDataFile(fileName, gradeBook);
+    /*std::ifstream inputFile;
+    inputFile.open(fileName);
+    if (inputFile.is_open()){
+        std::string line;
+        std::string category;
+        std::string fname;
+        std::string lname;
+        float grade;
+
+
+        while (inputFile){
+            std::istringstream extractValue(line);
+
+//            inputFile >> category;
+            extractValue >> category;
+            if (category == "Name"){
+//                inputFile >> fname >> lname;
+                extractValue >> fname >> lname;
+                gradeBook.SetStudentName(fname + " " + lname);
+            } else if (category == "Lab"){
+                while(extractValue >> grade){
+                    gradeBook.labGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Assignment"){
+                while(extractValue >> grade){
+                    gradeBook.assignmentGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Project"){
+                while(extractValue >> grade){
+                    gradeBook.projectGradesVector.emplace_back(grade);
+                }
+            } else if (category == "Exam"){
+                while(extractValue >> grade){
+                    gradeBook.examGradesVector.emplace_back(grade);
+                }
+            }
+            getline(inputFile, line);
+        }
+        inputFile.close();
+
+    }else{
+        std::cout << "Error opening file.";
+        return 1;
+    }*/
+    std::cout << "Labs:\n";
+    for (int i = 0; i < gradeBook.labGradesVector.size(); i++){
+        std::cout << std::to_string(gradeBook.labGradesVector[i]);
+        std::cout << std::endl;
+    }
+    double labAverage = gradeBook.calculateSpecificAverage(gradeBook.labGradesVector, gradeBook.maxSizeLab);
+    std::cout << labAverage << "\n";
+    std::cout << "Assignments:\n";
+    for (int i = 0; i < gradeBook.assignmentGradesVector.size(); i++){
+        std::cout << std::to_string(gradeBook.assignmentGradesVector[i]);
+        std::cout << std::endl;
+    }
+    double assAverage = gradeBook.calculateSpecificAverage(gradeBook.assignmentGradesVector, gradeBook.maxSizeAss);
+    std::cout << assAverage << "\n";
 
     // calculate coursegrade for student1's output
-    double courseGrade = student1.calculateCourseGrade(student1.homeworkGradesVector,
-                                                       student1.assignmentGradesVector,
-                                                       student1.labGradesVector,
-                                                       student1.examGradesVector,
-                                                       student1.projectGradesVector);
+    double courseGrade = gradeBook.calculateCourseGrade(gradeBook.assignmentGradesVector,
+                                                       gradeBook.labGradesVector,
+                                                       gradeBook.examGradesVector,
+                                                       gradeBook.projectGradesVector);
 
     // Output Values
-    std::cout << "Student Name: " << student1.getStudentName() << "\n";
+    std::cout << "Student Name: " << gradeBook.getStudentName() << "\n";
     std::cout << "Overall Course Grade: " << courseGrade << "\n";
 }
 
