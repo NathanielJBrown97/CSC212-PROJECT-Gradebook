@@ -9,16 +9,16 @@ public:
     // variable for student name
     std::string studentName;
     // series of vectors to contain the category grades
-    std::vector<int> assignmentGradesVector;
+    std::vector<double> assignmentGradesVector;
     const int maxSizeAss = 4;
     const int maxScoreAss = 50;
-    std::vector<int> labGradesVector;
+    std::vector<double> labGradesVector;
     const int maxSizeLab = 8;
     const int maxScoreLab = 25;
-    std::vector<int> examGradesVector;
+    std::vector<double> examGradesVector;
     const int maxSizeExam = 1;
     const int maxScoreExam = 100;
-    std::vector<int> projectGradesVector;
+    std::vector<double> projectGradesVector;
     const int maxSizeProject = 2;
     const int maxScoreProject = 500;
 
@@ -29,16 +29,16 @@ public:
     void intakeDataFile(const std::string& fileName, GradeBook& student);
 
     //Method that will calculate weighted course grade -- will use calcAvg helper -- passed all gradesVectors.
-    double calculateCourseGrade(const std::vector<int> &assignmentGradesVector ,
-                                const std::vector<int> &labGradesVector ,
-                                const std::vector<int> &examGradesVector ,
-                                const std::vector<int> &projectGradesVector);
+    double calculateCourseGrade(const std::vector<double> &assignmentGradesVector ,
+                                const std::vector<double> &labGradesVector ,
+                                const std::vector<double> &examGradesVector ,
+                                const std::vector<double> &projectGradesVector);
 //HELPERS
     //helper to calculate course grade; passed specific vector, returns specific average
-    double calculateSpecificAverage(const std::vector<int> &SpecificGradeVector, int maxGrades);
+    double calculateSpecificAverage(std::vector<double> &SpecificGradeVector, int maxGrades);
 
     //helper that will take a passed vector and a grade; and then add the grade into the vector
-    void addGradeToVector(std::vector<int> &SpecificGradeVector, int grade);
+    void addGradeToVector(std::vector<double> &SpecificGradeVector, double grade);
     void SetStudentName(std::string name);
 //GETTERS
     std::string getStudentName() const;
