@@ -1,0 +1,5 @@
+Name Dideverything Jones
+Labs 18 20 22 17 25 25 25 10
+Assignments 34 38 25 45
+Projects 143 340
+Exams 67
