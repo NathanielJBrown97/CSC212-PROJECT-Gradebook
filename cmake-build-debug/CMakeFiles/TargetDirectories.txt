@@ -1,3 +1,0 @@
-C:/Users/14012/Desktop/CSC212/Projects/211Project/cmake-build-debug/CMakeFiles/211Project.dir
-C:/Users/14012/Desktop/CSC212/Projects/211Project/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/14012/Desktop/CSC212/Projects/211Project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
